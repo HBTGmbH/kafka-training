@@ -1,0 +1,25 @@
+
+spring.cloud.stream:
+  function:
+    definition: process
+    bindings:
+      process-in-0: exampletopic
+      process-out-0: exampletopic2
+  #  bindings:
+  #    input:
+  #      destination: input
+  #    output:
+  #      destination: output
+
+  kafka:
+    streams:
+      binder:
+        applicationId: example-stream-app
+        configuration:
+          commit.interval.ms: 100
+          isolation.level: read_committed
+          processing.guarantee: exactly_once
+          # https://stackoverflow.com/questions/65146305/kafkastreams-processing-guarantee-exactly-once-and-exactly-once-beta-difference
+          default:
+            key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
