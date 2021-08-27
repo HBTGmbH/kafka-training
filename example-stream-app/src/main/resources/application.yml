@@ -1,10 +1,11 @@
 
 spring.cloud.stream:
   function:
-    definition: process
+    definition: process;salesData
     bindings:
-      process-in-0: exampletopic
-      process-out-0: exampletopic2
+      process-in-0.destination: exampletopic
+      process-out-0.destination: exampletopic2
+      salesData-in-0.destination: exampletopic
   #  bindings:
   #    input:
   #      destination: input

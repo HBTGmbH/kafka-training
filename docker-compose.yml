@@ -52,7 +52,6 @@ services:
     container_name: ksqldb-server
     depends_on:
       - broker
-      - connect
     ports:
       - "8088:8088"
     environment:
@@ -64,7 +63,6 @@ services:
       KSQL_KSQL_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-      KSQL_KSQL_CONNECT_URL: "http://connect:8083"
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
       KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
@@ -74,7 +72,6 @@ services:
     container_name: ksqldb-cli
     depends_on:
       - broker
-      - connect
       - ksqldb-server
     entrypoint: /bin/sh
     tty: true
