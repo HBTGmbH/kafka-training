@@ -17,5 +17,6 @@ public class Producer {
     @RequestMapping(method = RequestMethod.GET,path = "/create-event")
     public void createEvent(){
         kafkaTemplate.send("Topic1","key-1","value-1");
+        System.out.println("Event has been produced");
     }
 }
