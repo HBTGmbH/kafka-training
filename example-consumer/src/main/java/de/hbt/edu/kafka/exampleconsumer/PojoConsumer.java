@@ -13,29 +13,33 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class PojoConsumer {
+
     public static void main(String[] args) {
 
         Map<String, Object> configs = new HashMap<>();
-        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,"http://localhost:9092");
+        configs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "http://localhost:9092");
         configs.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         configs.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        configs.put(ConsumerConfig.GROUP_ID_CONFIG,"test-consumer");
-        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,"earliest");
-        KafkaConsumer<String,String> consumer = new KafkaConsumer<String, String>(configs);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, "test-consumer");
+        configs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, Boolean.FALSE);
+        configs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(configs);
 
         Collection<String> topics = new HashSet<>();
         topics.add("Topic1");
         consumer.subscribe(topics);
 
+        // Poll 1
         ConsumerRecords<String, String> events = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
-        events.forEach(event-> System.err.println("XXXXXXX---XXXXXX"+event.key()+event.value()));
+        events.forEach(event -> System.err.println("XXXXXXX---XXXXXX" + event.key() + event.value()));
+        consumer.commitSync();
+        // Poll 2
         ConsumerRecords<String, String> events2 = consumer.poll(Duration.ofMillis(Long.MAX_VALUE));
-        events2.forEach(event-> {
-            consumer.seek(new TopicPartition(event.topic(),event.partition()),event.offset()-1);
-            System.err.println("FEHLER----WWWWWWWWWWWWW");
+        events2.forEach(event -> {
+            consumer.seek(new TopicPartition(event.topic(), event.partition()), event.offset());
+            System.err.println("FEHLER----WWWWWWWWWWWWW " + event.key());
         });
 
         consumer.close();
-
     }
 }
